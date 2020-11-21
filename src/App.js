@@ -1,25 +1,65 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import {Colors} from './Colors.js';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class App extends React.Component{
 
-export default App;
+  createCanvas = () => {
+    this.context = this.myboard.getContext("2d");
+    this.myboard.height = window.innerHeight;
+    this.myboard.width = window.innerWidth;
+  }
+
+  componentDidMount(){
+    this.createCanvas();
+  };
+
+  colorSelect = (penColor, e) => {
+    this.pencolor = penColor;
+  }
+
+  renderColorPalette = () =>{
+    let colorBlocks = Colors.map((eachColor)=>{
+      return <div className="color-block" style={{backgroundColor: eachColor.color}} onClick={this.colorSelect.bind(this, eachColor.color)}></div>
+    })
+    return <div className="color-palette">{colorBlocks}</div>
+  }
+
+  drawingCanvas = ref => {
+		this.myboard = ref;
+  };
+  
+  startBrush = (e) => {
+    this.drawing = true;
+    this.draw(e);
+  }
+
+  stopBrush = (e) => {
+    this.drawing = false;
+    this.context.beginPath();
+  }
+
+  draw = (e)=>{
+    if(!this.drawing)return;
+        this.context.lineWidth = 10;
+        this.context.lineCap = "round";
+        this.context.strokeStyle = this.pencolor || 'black';
+        this.context.lineTo(e.clientX, e.clientY);
+        this.context.stroke();
+        this.context.beginPath();
+        this.context.moveTo(e.clientX, e.clientY);
+  }
+
+  render(){
+    return (
+      <div className="App">
+          {this.renderColorPalette()}
+        <div className="canvas-container">
+        
+        <canvas ref={this.drawingCanvas} className="board" onMouseMove={this.draw} onMouseUp={this.stopBrush} onMouseDown={this.startBrush}>
+        </canvas>
+        </div>
+      </div>
+    );
+  }
+};
