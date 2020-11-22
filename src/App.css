@@ -1,9 +1,6 @@
 .App {
   text-align: center;
 }
-.board{
-  border: 2px solid black;
-}
 .canvas-container{
   display: flex;
 }

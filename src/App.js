@@ -1,8 +1,13 @@
 import React from 'react';
 import './App.css';
+import Board from './Board.js';
 import {Colors} from './Colors.js';
 
 export default class App extends React.Component{
+  constructor(props){
+    super(props);
+    //this.myboard = React.createRef();
+  }
 
   createCanvas = () => {
     this.context = this.myboard.getContext("2d");
@@ -25,9 +30,9 @@ export default class App extends React.Component{
     return <div className="color-palette">{colorBlocks}</div>
   }
 
-  drawingCanvas = ref => {
-		this.myboard = ref;
-  };
+  // drawingCanvas = ref => {
+	// 	this.myboard = ref;
+  // };
   
   startBrush = (e) => {
     this.drawing = true;
@@ -50,14 +55,15 @@ export default class App extends React.Component{
         this.context.moveTo(e.clientX, e.clientY);
   }
 
+  //<canvas ref={this.drawingCanvas} className="board" onMouseMove={this.draw} onMouseUp={this.stopBrush} onMouseDown={this.startBrush}>
+       // </canvas>
+
   render(){
     return (
       <div className="App">
           {this.renderColorPalette()}
         <div className="canvas-container">
-        
-        <canvas ref={this.drawingCanvas} className="board" onMouseMove={this.draw} onMouseUp={this.stopBrush} onMouseDown={this.startBrush}>
-        </canvas>
+        <Board inputRef={el => this.myboard = el} onMouseMove={this.draw} onMouseUp={this.stopBrush} onMouseDown={this.startBrush}/>
         </div>
       </div>
     );
