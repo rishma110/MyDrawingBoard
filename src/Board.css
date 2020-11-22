@@ -1,3 +1,10 @@
-.board{
-    border: 2px solid black;
-  }
+.board {
+  border: 2px solid black;
+}
+.marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  opacity: 0.5;
+}

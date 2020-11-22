@@ -1,18 +1,32 @@
 .App {
   text-align: center;
 }
-.canvas-container{
-  display: flex;
+.canvas-container {
+  position: relative;
 }
-  
+
 .color-palette {
   display: flex;
 }
 
-.color-block{
+.color-block {
   height: 40px;
   width: 40px;
   border: 1px solid black;
+}
+
+.tools-container {
+  display: flex;
+}
+
+.tool-box {
+  margin: 4px;
+  border: 1px solid black;
+}
+
+.tool {
+  width: 40px;
+  height: 40px;
 }
 
 @keyframes App-logo-spin {
