@@ -30,6 +30,10 @@ export default class App extends React.Component{
     return <div className="color-palette">{colorBlocks}</div>
   }
 
+  renderBrushes = () => {
+    
+  }
+
   // drawingCanvas = ref => {
 	// 	this.myboard = ref;
   // };
