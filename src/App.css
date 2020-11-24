@@ -15,9 +15,14 @@
 }
 
 .color-block {
-  height: 40px;
-  width: 40px;
-  border: 1px solid black;
+  height: 36px;
+  width: 36px;
+  margin: 0px 2px;
+  border-radius: 50%;
+  border: 1px solid grey;
+}
+.color-block:hover {
+  border: 2px solid #2874f0;
 }
 
 .tools-container {
@@ -30,6 +35,10 @@
   border: 1px solid grey;
   padding: 6px;
   background: aliceblue;
+  border-radius: 4px;
+}
+.tool-box:hover {
+  border: 2px solid #2874f0;
 }
 
 .tool {
