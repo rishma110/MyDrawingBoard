@@ -16,6 +16,7 @@ import "./App.css";
 import Board from "./Board.js";
 import Marker from "./Marker.js";
 import { Colors, Tools } from "./Tools.js";
+import ErrorBoundary from "./ErrorBoundary.js";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -136,12 +137,12 @@ export default class App extends React.Component {
         <div
           style={{ width: "8px", height: "8px" }}
           className="circle"
-          onClick={() => this.brushSizeSelect(2)}
+          onClick={() => this.brushSizeSelect(3)}
         />
         <div
           style={{ width: "12px", height: "12px" }}
           className="circle"
-          onClick={() => this.brushSizeSelect(3)}
+          onClick={() => this.brushSizeSelect(5)}
         />
       </div>
     );
@@ -257,30 +258,28 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <div className="side-bar">
-          {this.renderBrushes()}
-          {this.renderColorPalette()}
+      <ErrorBoundary>
+        <div className="App">
+          <div className="side-bar">
+            {this.renderBrushes()}
+            {this.renderColorPalette()}
+          </div>
+          <div className="canvas-container">
+            <Board
+              inputRef={(el) => (this.myboard = el)}
+              onMouseMove={this.draw}
+              onMouseUp={this.stopBrush}
+              onMouseDown={this.startBrush}
+            />
+            <Marker
+              highlighterRef={(el) => (this.markerBoard = el)}
+              onMarkerMouseMove={this.markerDraw}
+              onMarkerMouseUp={this.stopMarker}
+              onMarkerMouseDown={this.startMarker}
+            />
+          </div>
         </div>
-        <div className="canvas-container">
-          <Board
-            inputRef={(el) => (this.myboard = el)}
-            onMouseMove={this.draw}
-            onMouseUp={this.stopBrush}
-            onMouseDown={this.startBrush}
-          />
-          <Marker
-            highlighterRef={(el) => (this.markerBoard = el)}
-            onMarkerMouseMove={this.markerDraw}
-            onMarkerMouseUp={this.stopMarker}
-            onMarkerMouseDown={this.startMarker}
-          />
-        </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 }
-
-//TO-DOs
-//componentdidcatch
-//errorboundaries
