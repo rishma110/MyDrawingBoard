@@ -1,3 +1,13 @@
+/*
+Initial steps
+I am using two canvases one canvas for pen strokes and eraser, the other for marker strokes
+the marker canvas is placed above the pen canvas with its opacity set to 50% and the initial visibility of the canvas is hidden
+On component mount we set the context of both canvases and set their respective heights and widths to be that of the window. 
+By default when user tries to make a stroke we make him use a pen of thickness 3px. The user can choose to change the thickness of the pen by clicking on the
+pen and selecting the desired thickness.
+When user selects the marker we make the marker canvas visible and make marker strokes of this canvas and ignoring mouse move events on the other canvas
+
+*/
 import React from "react";
 import "./App.css";
 import Board from "./Board.js";
@@ -34,12 +44,17 @@ export default class App extends React.Component {
 
   brushSizeSelect = (thickness) => {
     this.brushThickness = thickness;
-    let circleContainer = document.getElementById("circle-container");
-    circleContainer.style.visibility = "hidden";
+    this.hideToolThickness();
   };
 
   colorSelect = (penColor, e) => {
+    this.hideToolThickness();
     this.pencolor = penColor;
+  };
+
+  hideToolThickness = () => {
+    let circleContainer = document.getElementById("circle-container");
+    circleContainer.style.visibility = "hidden";
   };
 
   showToolThickness = () => {
@@ -48,6 +63,7 @@ export default class App extends React.Component {
   };
 
   toolSelect = (tool, e) => {
+    this.hideToolThickness();
     this.tool = tool;
     if (this.tool === "marker") {
       this.showMarker = true;
@@ -87,6 +103,9 @@ export default class App extends React.Component {
           >
             <img className="tool" src={eachTool.src} />
           </div>
+          {eachTool.tool === "pen" && (
+            <div className="brush-container">{this.renderBrushSize()}</div>
+          )}
           <div className={"pen-thickness"}>{eachTool.tool}</div>
         </>
       );
@@ -217,12 +236,9 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <div className="brush-container">
-          <div className="side-bar">
-            {this.renderBrushes()}
-            {this.renderColorPalette()}
-          </div>
-          {this.renderBrushSize()}
+        <div className="side-bar">
+          {this.renderBrushes()}
+          {this.renderColorPalette()}
         </div>
         <div className="canvas-container">
           <Board
