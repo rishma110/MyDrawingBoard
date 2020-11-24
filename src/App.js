@@ -1,11 +1,14 @@
 /*
 Initial steps
-I am using two canvases one canvas for pen strokes and eraser, the other for marker strokes
-the marker canvas is placed above the pen canvas with its opacity set to 50% and the initial visibility of the canvas is hidden
+We are using two canvases here, one canvas for pen strokes and eraser, the other for marker strokes
+The marker canvas is placed above the pen canvas with its opacity set to 50% and the initial visibility of the canvas is hidden
 On component mount we set the context of both canvases and set their respective heights and widths to be that of the window. 
 By default when user tries to make a stroke we make him use a pen of thickness 3px. The user can choose to change the thickness of the pen by clicking on the
 pen and selecting the desired thickness.
-When user selects the marker we make the marker canvas visible and make marker strokes of this canvas and ignoring mouse move events on the other canvas
+When user selects the marker we make the marker canvas visible and make marker strokes of this canvas and ignoring mouse move events on the pen canvas.
+Since the opacity of the canvas is 50% and background is transparent we see marker strokes on top of the pen strokes with opacity.
+We want to remove the marker strokes every time a new stroke is made for this we set new marker canvas context everytime user make a new stroke with marker or a pen or a eraser.
+We finally add an ability to change the colors from the color palette. We just set the color of the marker as well as pen when the new color is chosen.
 
 */
 import React from "react";
@@ -22,7 +25,7 @@ export default class App extends React.Component {
     this.showToolThickness = this.showToolThickness.bind(this);
     this.brushSizeSelect = this.brushSizeSelect.bind(this);
   }
-
+  /* Setting context for main canvas*/
   createCanvas = () => {
     if (!(this.context instanceof CanvasRenderingContext2D)) {
       this.context = this.myboard.getContext("2d");
@@ -31,6 +34,7 @@ export default class App extends React.Component {
     }
   };
 
+  /* Setting context for marker context*/
   setMarkerContext = () => {
     this.markerContext = this.markerBoard.getContext("2d");
     this.markerBoard.height = window.innerHeight;
@@ -42,26 +46,31 @@ export default class App extends React.Component {
     this.setMarkerContext();
   }
 
+  /* setting brush size for pen */
   brushSizeSelect = (thickness) => {
     this.brushThickness = thickness;
     this.hideToolThickness();
   };
 
+  /* setting color for pen and marker*/
   colorSelect = (penColor, e) => {
     this.hideToolThickness();
     this.pencolor = penColor;
   };
 
+  /* hiding the brush thickness selector */
   hideToolThickness = () => {
     let circleContainer = document.getElementById("circle-container");
     circleContainer.style.visibility = "hidden";
   };
 
+  /* showing the brush thickness selector */
   showToolThickness = () => {
     let circleContainer = document.getElementById("circle-container");
     circleContainer.style.visibility = "visible";
   };
 
+  /* on selecting pen/eraser/marker */
   toolSelect = (tool, e) => {
     this.hideToolThickness();
     this.tool = tool;
@@ -75,6 +84,7 @@ export default class App extends React.Component {
     }
   };
 
+  /* JSX to render Color palette*/
   renderColorPalette = () => {
     let colorBlocks = Colors.map((eachColor) => {
       return (
@@ -92,6 +102,7 @@ export default class App extends React.Component {
     return <div className="color-palette">{colorBlocks}</div>;
   };
 
+  /* JSX to render pen, marker and eraser tools*/
   renderBrushes = () => {
     let tools = Tools.map((eachTool) => {
       return (
@@ -113,6 +124,7 @@ export default class App extends React.Component {
     return <div className="tools-container">{<>{tools}</>}</div>;
   };
 
+  /*JSX to render brush thickness widget */
   renderBrushSize = () => {
     return (
       <div id="circle-container" className="circle-container">
@@ -135,6 +147,7 @@ export default class App extends React.Component {
     );
   };
 
+  /* Calculating the exact canvas coordinates using its offset values */
   getCanvasCoordinates = (e) => {
     let offsetX = this.showMarker
       ? this.markerBoard.getBoundingClientRect().left
@@ -150,6 +163,7 @@ export default class App extends React.Component {
     };
   };
 
+  //start writing with pen or start erasing
   startBrush = (e) => {
     if (this.showMarker) return;
     this.createCanvas();
@@ -157,12 +171,14 @@ export default class App extends React.Component {
     this.draw(e);
   };
 
+  /* stop writing with pen or stop erasing*/
   stopBrush = (e) => {
     if (this.showMarker) return;
     this.drawing = false;
     this.context.beginPath();
   };
 
+  /* this is called when we are draging the mouse to erase the contents of the canvas*/
   erase = (e) => {
     let { X, Y } = this.getCanvasCoordinates(e);
     this.context.lineWidth = 25;
@@ -175,6 +191,7 @@ export default class App extends React.Component {
     this.context.moveTo(X, Y);
   };
 
+  /* this is called when we are dragging the mouse with marker selected */
   drawUsingMarker = (e) => {
     if (!this.showMarker) return;
     let { X, Y } = this.getCanvasCoordinates(e);
@@ -188,6 +205,7 @@ export default class App extends React.Component {
     this.markerContext.moveTo(X, Y);
   };
 
+  /* this is called when we are draging the mouse with pen selected*/
   drawUsingPen = (e) => {
     let { X, Y } = this.getCanvasCoordinates(e);
     this.context.lineWidth = this.brushThickness || 3;
@@ -199,6 +217,7 @@ export default class App extends React.Component {
     this.context.moveTo(X, Y);
   };
 
+  /*decides whether draging the mouse should cause erase or pen write based on the tool chosen */
   draw = (e) => {
     if (!this.drawing || this.showMarker) return;
     switch (this.tool) {
@@ -210,18 +229,21 @@ export default class App extends React.Component {
     }
   };
 
+  /* called when user stops using marker*/
   stopMarker = (e) => {
     if (!this.showMarker) return;
     this.markerDrawing = false;
     this.markerContext.beginPath();
   };
 
+  /* called when we are drawing with marker*/
   markerDraw = (e) => {
     if (!this.showMarker) return;
     if (!this.markerDrawing) return;
     this.drawUsingMarker(e);
   };
 
+  /* called when we start using marker*/
   startMarker = (e) => {
     if (!this.showMarker) {
       this.markerBoard.style.visibility = "hidden";
@@ -262,4 +284,3 @@ export default class App extends React.Component {
 //TO-DOs
 //componentdidcatch
 //errorboundaries
-//comments

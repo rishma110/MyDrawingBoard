@@ -1,3 +1,5 @@
+//stateless canvas componenet to display pen strokes and eraser movements;
+
 import React from "react";
 import "./Board.css";
 

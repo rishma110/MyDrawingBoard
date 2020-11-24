@@ -1,3 +1,4 @@
+//stateless canvas component that is used to display marker strokes
 import React from "react";
 import "./Board.css";
 
