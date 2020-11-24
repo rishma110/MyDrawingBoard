@@ -2,6 +2,7 @@
   border: 2px solid black;
 }
 .marker {
+  visibility: hidden;
   position: absolute;
   top: 0;
   left: 0;

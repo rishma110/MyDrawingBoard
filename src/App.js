@@ -7,19 +7,27 @@ import { Colors, Tools } from "./Tools.js";
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showMarker: false,
-    };
+    this.toolSelect = this.toolSelect.bind(this);
+    this.colorSelect = this.colorSelect.bind(this);
   }
 
   createCanvas = () => {
-    this.context = this.myboard.getContext("2d");
-    this.myboard.height = window.innerHeight;
-    this.myboard.width = window.innerWidth;
+    if (!(this.context instanceof CanvasRenderingContext2D)) {
+      this.context = this.myboard.getContext("2d");
+      this.myboard.height = window.innerHeight;
+      this.myboard.width = window.innerWidth;
+    }
+  };
+
+  setMarkerContext = () => {
+    this.markerContext = this.markerBoard.getContext("2d");
+    this.markerBoard.height = window.innerHeight;
+    this.markerBoard.width = window.innerWidth;
   };
 
   componentDidMount() {
     this.createCanvas();
+    this.setMarkerContext();
   }
 
   colorSelect = (penColor, e) => {
@@ -28,28 +36,23 @@ export default class App extends React.Component {
 
   toolSelect = (tool, e) => {
     this.tool = tool;
-    this.setState(
-      {
-        showMarker: tool === "marker",
-      },
-      () => {
-        console.log(this.context);
-        if (this.state.showMarker) {
-          this.setMarkerContext();
-        } else {
-          this.markerContext = null;
-        }
-      }
-    );
+    if (this.tool === "marker") {
+      this.showMarker = true;
+      this.markerBoard.style.visibility = "visible";
+    } else {
+      this.showMarker = false;
+      this.markerBoard.style.visibility = "hidden";
+    }
   };
 
   renderColorPalette = () => {
     let colorBlocks = Colors.map((eachColor) => {
       return (
         <div
+          key={eachColor.color}
           className="color-block"
           style={{ backgroundColor: eachColor.color }}
-          onClick={this.colorSelect.bind(this, eachColor.color)}
+          onClick={() => this.colorSelect(eachColor.color)}
         ></div>
       );
     });
@@ -60,21 +63,22 @@ export default class App extends React.Component {
     let tools = Tools.map((eachTool) => {
       return (
         <div
+          key={eachTool.tool}
           className="tool-box"
-          onClick={this.toolSelect.bind(this, eachTool.tool)}
+          onClick={() => this.toolSelect(eachTool.tool)}
         >
           <img className="tool" src={eachTool.src} />
         </div>
       );
     });
-    return <div class="tools-container">{tools}</div>;
+    return <div className="tools-container">{tools}</div>;
   };
 
   getCanvasCoordinates = (e) => {
-    let offsetX = this.state.showMarker
+    let offsetX = this.showMarker
       ? this.markerBoard.getBoundingClientRect().left
       : this.myboard.getBoundingClientRect().left;
-    let offsetY = this.state.showMarker
+    let offsetY = this.showMarker
       ? this.markerBoard.getBoundingClientRect().top
       : this.myboard.getBoundingClientRect().top;
     let X = e.clientX - offsetX;
@@ -86,13 +90,14 @@ export default class App extends React.Component {
   };
 
   startBrush = (e) => {
-    if (this.state.showMarker) return;
+    if (this.showMarker) return;
+    this.createCanvas();
     this.drawing = true;
     this.draw(e);
   };
 
   stopBrush = (e) => {
-    if (this.state.showMarker) return;
+    if (this.showMarker) return;
     this.drawing = false;
     this.context.beginPath();
   };
@@ -134,7 +139,7 @@ export default class App extends React.Component {
   };
 
   draw = (e) => {
-    if (!this.drawing || this.state.showMarker) return;
+    if (!this.drawing || this.showMarker) return;
     switch (this.tool) {
       case "eraser":
         return this.erase(e);
@@ -145,42 +150,29 @@ export default class App extends React.Component {
   };
 
   stopMarker = (e) => {
-    if (this.tool === "marker") {
-      this.drawing = false;
-      this.markerContext.beginPath();
-    }
+    if (!this.showMarker) return;
+    this.markerDrawing = false;
+    this.markerContext.beginPath();
   };
 
   markerDraw = (e) => {
-    if (!this.markerContext) {
-      this.setMarkerContext();
-    }
-    if (this.tool === "marker") {
-      this.drawUsingMarker(e);
-    }
-  };
-
-  setMarkerContext = () => {
-    if (!this.markerContext) {
-      this.markerContext = this.markerBoard.getContext("2d");
-      this.markerBoard.height = window.innerHeight;
-      this.markerBoard.width = window.innerWidth;
-    }
+    if (!this.showMarker) return;
+    if (!this.markerDrawing) return;
+    this.drawUsingMarker(e);
   };
 
   startMarker = (e) => {
-    if (!this.markerContext) {
-      this.setMarkerContext();
-    }
-    if (this.tool === "marker") {
-      this.drawing = true;
-      this.markerDraw(e);
-    }
+    if (!this.showMarker) return;
+    this.markerContext = null;
+    this.setMarkerContext();
+    this.markerDrawing = true;
+    this.markerDraw(e);
   };
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return this.state.showMarker !== nextState.showMarker;
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    //return this.state.showMarker !== nextState.showMarker;
+  }
+
   render() {
     return (
       <div className="App">
@@ -193,14 +185,12 @@ export default class App extends React.Component {
             onMouseUp={this.stopBrush}
             onMouseDown={this.startBrush}
           />
-          {this.state.showMarker && (
-            <Marker
-              highlighterRef={(el) => (this.markerBoard = el)}
-              onMarkerMouseMove={this.markerDraw}
-              onMarkerMouseUp={this.stopMarker}
-              onMarkerMouseDown={this.startMarker}
-            />
-          )}
+          <Marker
+            highlighterRef={(el) => (this.markerBoard = el)}
+            onMarkerMouseMove={this.markerDraw}
+            onMarkerMouseUp={this.stopMarker}
+            onMarkerMouseDown={this.startMarker}
+          />
         </div>
       </div>
     );
