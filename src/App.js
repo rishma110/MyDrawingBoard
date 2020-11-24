@@ -127,23 +127,21 @@ export default class App extends React.Component {
 
   /*JSX to render brush thickness widget */
   renderBrushSize = () => {
+    let arr = [0, 0, 0];
+    let circles = arr.map((_, index) => {
+      let width = `${(index + 1) * 4}px`;
+      let val = 2 * index + 1;
+      return (
+        <div
+          style={{ width: width, height: width }}
+          className="circle"
+          onClick={() => this.brushSizeSelect(val)}
+        />
+      );
+    });
     return (
       <div id="circle-container" className="circle-container">
-        <div
-          style={{ width: "4px", height: "4px" }}
-          className="circle"
-          onClick={() => this.brushSizeSelect(1)}
-        />
-        <div
-          style={{ width: "8px", height: "8px" }}
-          className="circle"
-          onClick={() => this.brushSizeSelect(3)}
-        />
-        <div
-          style={{ width: "12px", height: "12px" }}
-          className="circle"
-          onClick={() => this.brushSizeSelect(5)}
-        />
+        {circles}
       </div>
     );
   };
@@ -179,43 +177,34 @@ export default class App extends React.Component {
     this.context.beginPath();
   };
 
+  makeMove = (e, context, brushThickness, lineCap, color) => {
+    let { X, Y } = this.getCanvasCoordinates(e);
+    context.lineWidth = brushThickness;
+    context.lineCap = lineCap;
+    context.strokeStyle = color;
+    context.lineTo(X, Y);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(X, Y);
+  };
+
   /* this is called when we are draging the mouse to erase the contents of the canvas*/
   erase = (e) => {
-    let { X, Y } = this.getCanvasCoordinates(e);
-    this.context.lineWidth = 25;
-    this.context.lineCap = "round";
-    this.context.globalAlpha = 1;
-    this.context.strokeStyle = "white";
-    this.context.lineTo(X, Y);
-    this.context.stroke();
-    this.context.beginPath();
-    this.context.moveTo(X, Y);
+    this.makeMove(e, this.context, 25, "round", "white");
   };
 
   /* this is called when we are dragging the mouse with marker selected */
   drawUsingMarker = (e) => {
     if (!this.showMarker) return;
-    let { X, Y } = this.getCanvasCoordinates(e);
-    this.markerContext.lineWidth = 20;
-    this.markerContext.lineCap = "square";
-    this.markerContext.globalCompositeOperation = "source-over";
-    this.markerContext.strokeStyle = this.pencolor || "black";
-    this.markerContext.lineTo(X, Y);
-    this.markerContext.stroke();
-    this.markerContext.beginPath();
-    this.markerContext.moveTo(X, Y);
+    const color = this.pencolor || "black";
+    this.makeMove(e, this.markerContext, 20, "square", color);
   };
 
   /* this is called when we are draging the mouse with pen selected*/
   drawUsingPen = (e) => {
-    let { X, Y } = this.getCanvasCoordinates(e);
-    this.context.lineWidth = this.brushThickness || 3;
-    this.context.lineCap = "round";
-    this.context.strokeStyle = this.pencolor || "black";
-    this.context.lineTo(X, Y);
-    this.context.stroke();
-    this.context.beginPath();
-    this.context.moveTo(X, Y);
+    const brushThickness = this.brushThickness || 3;
+    const color = this.pencolor || "black";
+    this.makeMove(e, this.context, brushThickness, "round", color);
   };
 
   /*decides whether draging the mouse should cause erase or pen write based on the tool chosen */
