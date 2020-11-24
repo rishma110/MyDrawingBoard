@@ -177,8 +177,8 @@ export default class App extends React.Component {
     return (
       <div className="App">
         <div className="side-bar">
-          {this.renderColorPalette()}
           {this.renderBrushes()}
+          {this.renderColorPalette()}
         </div>
         <div className="canvas-container">
           <Board
