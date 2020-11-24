@@ -9,6 +9,8 @@ export default class App extends React.Component {
     super(props);
     this.toolSelect = this.toolSelect.bind(this);
     this.colorSelect = this.colorSelect.bind(this);
+    this.showToolThickness = this.showToolThickness.bind(this);
+    this.brushSizeSelect = this.brushSizeSelect.bind(this);
   }
 
   createCanvas = () => {
@@ -30,8 +32,19 @@ export default class App extends React.Component {
     this.setMarkerContext();
   }
 
+  brushSizeSelect = (thickness) => {
+    this.brushThickness = thickness;
+    let circleContainer = document.getElementById("circle-container");
+    circleContainer.style.visibility = "hidden";
+  };
+
   colorSelect = (penColor, e) => {
     this.pencolor = penColor;
+  };
+
+  showToolThickness = () => {
+    let circleContainer = document.getElementById("circle-container");
+    circleContainer.style.visibility = "visible";
   };
 
   toolSelect = (tool, e) => {
@@ -41,6 +54,7 @@ export default class App extends React.Component {
       this.markerBoard.style.visibility = "visible";
     } else {
       this.showMarker = false;
+      if (tool === "pen") this.showToolThickness();
       //this.markerBoard.style.visibility = "hidden";
     }
   };
@@ -48,12 +62,15 @@ export default class App extends React.Component {
   renderColorPalette = () => {
     let colorBlocks = Colors.map((eachColor) => {
       return (
-        <div
-          key={eachColor.color}
-          className="color-block"
-          style={{ backgroundColor: eachColor.color }}
-          onClick={() => this.colorSelect(eachColor.color)}
-        ></div>
+        <>
+          <div
+            key={eachColor.color}
+            className="color-block"
+            style={{ backgroundColor: eachColor.color }}
+            onClick={() => this.colorSelect(eachColor.color)}
+          ></div>
+          <div className={"pen-thickness"}>{eachColor.color}</div>
+        </>
       );
     });
     return <div className="color-palette">{colorBlocks}</div>;
@@ -62,16 +79,41 @@ export default class App extends React.Component {
   renderBrushes = () => {
     let tools = Tools.map((eachTool) => {
       return (
-        <div
-          key={eachTool.tool}
-          className="tool-box"
-          onClick={() => this.toolSelect(eachTool.tool)}
-        >
-          <img className="tool" src={eachTool.src} />
-        </div>
+        <>
+          <div
+            key={eachTool.tool}
+            className="tool-box"
+            onClick={() => this.toolSelect(eachTool.tool)}
+          >
+            <img className="tool" src={eachTool.src} />
+          </div>
+          <div className={"pen-thickness"}>{eachTool.tool}</div>
+        </>
       );
     });
-    return <div className="tools-container">{tools}</div>;
+    return <div className="tools-container">{<>{tools}</>}</div>;
+  };
+
+  renderBrushSize = () => {
+    return (
+      <div id="circle-container" className="circle-container">
+        <div
+          style={{ width: "4px", height: "4px" }}
+          className="circle"
+          onClick={() => this.brushSizeSelect(1)}
+        />
+        <div
+          style={{ width: "8px", height: "8px" }}
+          className="circle"
+          onClick={() => this.brushSizeSelect(2)}
+        />
+        <div
+          style={{ width: "12px", height: "12px" }}
+          className="circle"
+          onClick={() => this.brushSizeSelect(3)}
+        />
+      </div>
+    );
   };
 
   getCanvasCoordinates = (e) => {
@@ -129,9 +171,8 @@ export default class App extends React.Component {
 
   drawUsingPen = (e) => {
     let { X, Y } = this.getCanvasCoordinates(e);
-    this.context.lineWidth = 3;
+    this.context.lineWidth = this.brushThickness || 3;
     this.context.lineCap = "round";
-    this.context.globalAlpha = 1;
     this.context.strokeStyle = this.pencolor || "black";
     this.context.lineTo(X, Y);
     this.context.stroke();
@@ -176,9 +217,12 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <div className="side-bar">
-          {this.renderBrushes()}
-          {this.renderColorPalette()}
+        <div className="brush-container">
+          <div className="side-bar">
+            {this.renderBrushes()}
+            {this.renderColorPalette()}
+          </div>
+          {this.renderBrushSize()}
         </div>
         <div className="canvas-container">
           <Board

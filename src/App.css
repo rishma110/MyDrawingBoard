@@ -7,7 +7,7 @@
 }
 
 .color-palette {
-  background: aliceblue;
+  background: #f5f5f6;
   border: 1px solid grey;
   border-radius: 4px;
   margin: 4px;
@@ -25,18 +25,62 @@
   border: 2px solid #2874f0;
 }
 
+.color-block:hover + .pen-thickness {
+  padding: 4px;
+  border: 1px solid grey;
+  background-color: white;
+  z-index: 1;
+  position: absolute;
+  display: inline-block;
+}
+
+.pen-thickness {
+  display: none;
+}
+
 .tools-container {
 }
 
+.brush-container {
+  display: inline-flex;
+  position: relative;
+}
+.circle-container {
+  visibility: hidden;
+  border: 1px solid grey;
+  background: #f5f5f6;
+  border-radius: 4px;
+  padding: 4px;
+  align-items: center;
+  height: 28px;
+  display: flex;
+}
+.circle {
+  border-radius: 50%;
+  background-color: grey;
+  border: 1px solid black;
+  margin: 0px 4px;
+}
+.circle:hover {
+  border: 2px solid #2874f0;
+}
 .tool-box {
   margin: 4px;
   border: 1px solid grey;
   padding: 6px;
-  background: aliceblue;
+  background: #f5f5f6;
   border-radius: 4px;
 }
 .tool-box:hover {
   border: 2px solid #2874f0;
+}
+.tool-box:hover + .pen-thickness {
+  padding: 4px;
+  border: 1px solid grey;
+  background-color: white;
+  z-index: 1;
+  position: absolute;
+  display: inline-block;
 }
 
 .tool {
