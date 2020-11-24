@@ -41,7 +41,7 @@ export default class App extends React.Component {
       this.markerBoard.style.visibility = "visible";
     } else {
       this.showMarker = false;
-      this.markerBoard.style.visibility = "hidden";
+      //this.markerBoard.style.visibility = "hidden";
     }
   };
 
@@ -104,7 +104,7 @@ export default class App extends React.Component {
 
   erase = (e) => {
     let { X, Y } = this.getCanvasCoordinates(e);
-    this.context.lineWidth = 10;
+    this.context.lineWidth = 25;
     this.context.lineCap = "round";
     this.context.globalAlpha = 1;
     this.context.strokeStyle = "white";
@@ -115,8 +115,9 @@ export default class App extends React.Component {
   };
 
   drawUsingMarker = (e) => {
+    if (!this.showMarker) return;
     let { X, Y } = this.getCanvasCoordinates(e);
-    this.markerContext.lineWidth = 5;
+    this.markerContext.lineWidth = 20;
     this.markerContext.lineCap = "square";
     this.markerContext.globalCompositeOperation = "source-over";
     this.markerContext.strokeStyle = this.pencolor || "black";
@@ -162,22 +163,23 @@ export default class App extends React.Component {
   };
 
   startMarker = (e) => {
-    if (!this.showMarker) return;
+    if (!this.showMarker) {
+      this.markerBoard.style.visibility = "hidden";
+      this.startBrush(e);
+    }
     this.markerContext = null;
     this.setMarkerContext();
     this.markerDrawing = true;
     this.markerDraw(e);
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //return this.state.showMarker !== nextState.showMarker;
-  }
-
   render() {
     return (
       <div className="App">
-        {this.renderColorPalette()}
-        {this.renderBrushes()}
+        <div className="side-bar">
+          {this.renderColorPalette()}
+          {this.renderBrushes()}
+        </div>
         <div className="canvas-container">
           <Board
             inputRef={(el) => (this.myboard = el)}
@@ -196,3 +198,8 @@ export default class App extends React.Component {
     );
   }
 }
+
+//TO-DOs
+//componentdidcatch
+//errorboundaries
+//comments

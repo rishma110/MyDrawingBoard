@@ -7,6 +7,11 @@
 
 .color-palette {
   display: flex;
+  background: aliceblue;
+  border: 1px solid grey;
+  border-radius: 4px;
+  margin: 4px;
+  padding: 4px;
 }
 
 .color-block {
@@ -16,17 +21,25 @@
 }
 
 .tools-container {
+  float: right;
   display: flex;
 }
 
 .tool-box {
   margin: 4px;
-  border: 1px solid black;
+  border: 1px solid grey;
+  padding: 6px;
+  background: aliceblue;
 }
 
 .tool {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
+}
+
+.side-bar {
+  display: flex;
+  justify-content: center;
 }
 
 @keyframes App-logo-spin {
