@@ -115,10 +115,10 @@ export default class App extends React.Component {
           >
             <img className="tool" src={eachTool.src} />
           </div>
+          <div className={"pen-thickness"}>{eachTool.tool}</div>
           {eachTool.tool === "pen" && (
             <div className="brush-container">{this.renderBrushSize()}</div>
           )}
-          <div className={"pen-thickness"}>{eachTool.tool}</div>
         </>
       );
     });
