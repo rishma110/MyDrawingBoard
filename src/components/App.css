@@ -1,4 +1,4 @@
-.App {
+.main-container {
   text-align: center;
   display: flex;
 }
@@ -25,7 +25,7 @@
   border: 2px solid #2874f0;
 }
 
-.color-block:hover + .pen-thickness {
+.color-block:hover + .tool-name {
   padding: 4px;
   border: 1px solid grey;
   background-color: white;
@@ -34,11 +34,8 @@
   display: inline-block;
 }
 
-.pen-thickness {
+.tool-name {
   display: none;
-}
-
-.tools-container {
 }
 
 .brush-container {
@@ -76,7 +73,7 @@
 .tool-box:hover {
   border: 2px solid #2874f0;
 }
-.tool-box:hover + .pen-thickness {
+.tool-box:hover + .tool-name {
   padding: 4px;
   border: 1px solid grey;
   background-color: white;
