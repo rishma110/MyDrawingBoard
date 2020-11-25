@@ -10,6 +10,9 @@ const Marker = (props) => {
       onMouseMove={props.onMarkerMouseMove}
       onMouseUp={props.onMarkerMouseUp}
       onMouseDown={props.onMarkerMouseDown}
+      onTouchMove={props.onMarkerMouseMove}
+      onTouchEnd={props.onMarkerMouseUp}
+      onTouchStart={props.onMarkerMouseDown}
     />
   );
 };

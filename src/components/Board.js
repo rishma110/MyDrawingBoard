@@ -9,6 +9,9 @@ const Board = (props) => {
       onMouseMove={props.onMouseMove}
       onMouseUp={props.onMouseUp}
       onMouseDown={props.onMouseDown}
+      onTouchMove={props.onMouseMove}
+      onTouchEnd={props.onMouseUp}
+      onTouchStart={props.onMouseDown}
     />
   );
 };

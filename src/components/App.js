@@ -30,16 +30,16 @@ export default class App extends React.Component {
   createCanvas = () => {
     if (!(this.context instanceof CanvasRenderingContext2D)) {
       this.context = this.myboard.getContext("2d");
-      this.myboard.height = window.innerHeight;
-      this.myboard.width = window.innerWidth;
+      this.myboard.height = window.innerHeight - 8;
+      this.myboard.width = window.innerWidth - 8;
     }
   };
 
   /* Setting context for marker context*/
   setMarkerContext = () => {
     this.markerContext = this.markerBoard.getContext("2d");
-    this.markerBoard.height = window.innerHeight;
-    this.markerBoard.width = window.innerWidth;
+    this.markerBoard.height = window.innerHeight - 8;
+    this.markerBoard.width = window.innerWidth - 8;
   };
 
   componentDidMount() {
