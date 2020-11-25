@@ -152,8 +152,10 @@ export default class App extends React.Component {
     const offsetY = this.showMarker
       ? this.markerBoard.getBoundingClientRect().top
       : this.myboard.getBoundingClientRect().top;
-    const X = e.clientX - offsetX;
-    const Y = e.clientY - offsetY;
+    const pointerX = e.clientX || e.touches[0].clientX;
+    const pointerY = e.clientY || e.touches[0].clientY;
+    const X = pointerX - offsetX;
+    const Y = pointerY - offsetY;
     return {
       X,
       Y,
