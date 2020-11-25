@@ -177,7 +177,7 @@ export default class App extends React.Component {
     this.context.beginPath();
   };
 
-  makeMove = (e, context, brushThickness, lineCap, color) => {
+  makeStroke = (e, context, brushThickness, lineCap, color) => {
     let { X, Y } = this.getCanvasCoordinates(e);
     context.lineWidth = brushThickness;
     context.lineCap = lineCap;
@@ -190,21 +190,21 @@ export default class App extends React.Component {
 
   /* this is called when we are draging the mouse to erase the contents of the canvas*/
   erase = (e) => {
-    this.makeMove(e, this.context, 25, "round", "white");
+    this.makeStroke(e, this.context, 25, "round", "white");
   };
 
   /* this is called when we are dragging the mouse with marker selected */
   drawUsingMarker = (e) => {
     if (!this.showMarker) return;
     const color = this.pencolor || "black";
-    this.makeMove(e, this.markerContext, 20, "square", color);
+    this.makeStroke(e, this.markerContext, 20, "square", color);
   };
 
   /* this is called when we are draging the mouse with pen selected*/
   drawUsingPen = (e) => {
     const brushThickness = this.brushThickness || 3;
     const color = this.pencolor || "black";
-    this.makeMove(e, this.context, brushThickness, "round", color);
+    this.makeStroke(e, this.context, brushThickness, "round", color);
   };
 
   /*decides whether draging the mouse should cause erase or pen write based on the tool chosen */
